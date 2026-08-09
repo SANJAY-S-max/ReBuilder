@@ -7,7 +7,7 @@ export const generateResume = async (formData) => {
     const response = await axios.post(`${API_URL}/generate`, formData);
     return response.data.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to generate resume');
+    throw new Error(error.response?.data?.message || 'Failed to generate resume', { cause: error });
   }
 };
 
@@ -16,6 +16,6 @@ export const getHistory = async () => {
     const response = await axios.get(`${API_URL}/history`);
     return response.data.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch history');
+    throw new Error(error.response?.data?.message || 'Failed to fetch history', { cause: error });
   }
 };
