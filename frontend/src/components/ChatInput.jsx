@@ -57,10 +57,10 @@ const ChatInput = ({ onSend, disabled, placeholder, multiline }) => {
       <button
         onClick={handleSend}
         disabled={!value.trim() || disabled}
-        className={`absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+        className={`absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
           value.trim() && !disabled
-            ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-105'
-            : 'bg-white/5 text-slate-500 cursor-not-allowed'
+            ? 'bg-blue-700 text-white hover:bg-blue-800'
+            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
         }`}
         id="send-button"
       >
