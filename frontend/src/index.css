@@ -3,57 +3,85 @@
 @tailwind utilities;
 
 :root {
-  --accent-primary: #1d4ed8;
-  --accent-secondary: #2563eb;
+  --accent-primary: #2563eb;
+  --accent-secondary: #3b82f6;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --border-light: #e2e8f0;
   --bg-page: #f8fafc;
+  --card-bg: #ffffff;
+}
+
+.dark {
+  --accent-primary: #3b82f6;
+  --accent-secondary: #60a5fa;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-light: #1e293b;
+  --bg-page: #0b0f19;
+  --card-bg: #111827;
 }
 
 @layer base {
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply bg-slate-50 text-slate-900 antialiased transition-colors duration-200;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
-  ::selection { background: rgba(29, 78, 216, 0.15); }
-  ::-webkit-scrollbar { width: 6px; }
+  .dark body {
+    @apply bg-[#0b0f19] text-slate-100;
+  }
+  ::selection { background: rgba(59, 130, 246, 0.25); }
+  .dark ::selection { background: rgba(59, 130, 246, 0.4); color: #ffffff; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  .dark ::-webkit-scrollbar-track { background: #0b0f19; }
+  .dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+  .dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-700 text-white rounded-lg font-semibold text-sm hover:bg-blue-800 transition-colors shadow-sm;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg font-semibold text-sm transition-all shadow-sm hover:shadow-md hover:shadow-blue-500/20 active:scale-[0.99];
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 bg-white text-slate-700 rounded-lg font-medium text-sm border border-slate-200 hover:bg-slate-50 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 bg-white text-slate-700 rounded-lg font-medium text-sm border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-600;
   }
   .btn-choice {
-    @apply inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 rounded-lg font-medium text-sm border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all;
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 rounded-lg font-medium text-sm border border-slate-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all dark:bg-slate-800/90 dark:text-slate-200 dark:border-slate-700 dark:hover:border-blue-500 dark:hover:bg-blue-950/50 dark:hover:text-blue-300 shadow-sm;
   }
   .chat-input-field {
-    @apply w-full px-4 py-3 pr-12 border border-slate-200 rounded-xl text-sm text-slate-800 bg-white outline-none transition-all resize-none;
+    @apply w-full px-4 py-3 pr-12 border border-slate-200 rounded-xl text-sm text-slate-800 bg-white outline-none transition-all resize-none dark:border-slate-700/90 dark:bg-slate-900/90 dark:text-slate-100 dark:placeholder-slate-500;
     font-family: 'Inter', sans-serif;
   }
   .chat-input-field:focus {
-    @apply border-blue-500 ring-2 ring-blue-500/20;
+    @apply border-blue-500 ring-2 ring-blue-500/20 dark:border-blue-500 dark:ring-blue-500/30;
   }
   .chat-input-field::placeholder { color: #94a3b8; }
-  .chat-input-field:disabled { @apply bg-slate-50 cursor-not-allowed; }
+  .dark .chat-input-field::placeholder { color: #64748b; }
+  .chat-input-field:disabled { @apply bg-slate-50 dark:bg-slate-900/50 cursor-not-allowed; }
+
   .pulse-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: #2563eb;
+    background: #3b82f6;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
     animation: pulse 2s ease-in-out infinite;
   }
   .typing-indicator { display: flex; gap: 4px; padding: 8px 0; }
   .typing-indicator span {
     width: 6px; height: 6px; border-radius: 50%;
-    background: #94a3b8;
+    background: #64748b;
     animation: typing-bounce 1.4s ease-in-out infinite;
+  }
+  .dark .typing-indicator span {
+    background: #475569;
   }
   .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
   .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
@@ -72,5 +100,5 @@
 @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideInRight { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes slideInLeft { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }

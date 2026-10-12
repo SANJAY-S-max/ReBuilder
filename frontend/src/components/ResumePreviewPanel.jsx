@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { ZoomIn, ZoomOut, Download, Undo2, Redo2, Maximize2 } from 'lucide-react';
+import { ZoomIn, ZoomOut, Download, Maximize2 } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import { renderResume } from '../engine/resumeRenderer';
 import { useToast } from './Toast';
@@ -54,27 +54,46 @@ const ResumePreviewPanel = ({ resumeData, customization, previewRef }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-100 border-b border-slate-200 rounded-t-xl">
-        <div className="flex items-center gap-1">
-          <button onClick={handleZoomOut} disabled={zoom <= ZOOM_LEVELS[0]} className="p-1.5 rounded hover:bg-white text-slate-600 disabled:opacity-40" title="Zoom out">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-100/90 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={handleZoomOut}
+            disabled={zoom <= ZOOM_LEVELS[0]}
+            className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 transition-colors"
+            title="Zoom out"
+          >
             <ZoomOut size={16} />
           </button>
-          <span className="text-xs font-medium text-slate-600 w-12 text-center">{Math.round(zoom * 100)}%</span>
-          <button onClick={handleZoomIn} disabled={zoom >= ZOOM_LEVELS[ZOOM_LEVELS.length - 1]} className="p-1.5 rounded hover:bg-white text-slate-600 disabled:opacity-40" title="Zoom in">
+          <span className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 w-12 text-center">
+            {Math.round(zoom * 100)}%
+          </span>
+          <button
+            onClick={handleZoomIn}
+            disabled={zoom >= ZOOM_LEVELS[ZOOM_LEVELS.length - 1]}
+            className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 transition-colors"
+            title="Zoom in"
+          >
             <ZoomIn size={16} />
           </button>
-          <button onClick={() => setZoom(0.75)} className="p-1.5 rounded hover:bg-white text-slate-600" title="Reset zoom">
+          <button
+            onClick={() => setZoom(0.75)}
+            className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+            title="Reset zoom"
+          >
             <Maximize2 size={16} />
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 hidden sm:inline">A4 Preview</span>
+
+        <div className="flex items-center gap-2.5">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hidden sm:inline">
+            A4 Print Layout
+          </span>
           <button
             onClick={handleDownload}
             disabled={isDownloading || !resumeData}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-700 text-white rounded-lg text-xs font-semibold hover:bg-blue-800 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold disabled:opacity-50 transition-all shadow-sm shadow-blue-500/20 active:scale-95"
           >
             <Download size={14} />
             {isDownloading ? 'Exporting...' : 'Download PDF'}
@@ -83,7 +102,7 @@ const ResumePreviewPanel = ({ resumeData, customization, previewRef }) => {
       </div>
 
       {/* Preview Area */}
-      <div className="flex-1 overflow-auto bg-slate-200/60 p-6 rounded-b-xl" style={{ minHeight: '500px' }}>
+      <div className="flex-1 overflow-auto bg-slate-200/50 dark:bg-[#070a14] p-6 custom-scrollbar" style={{ minHeight: '500px' }}>
         <div className="flex justify-center">
           <div
             style={{
@@ -92,9 +111,10 @@ const ResumePreviewPanel = ({ resumeData, customization, previewRef }) => {
               width: '210mm',
             }}
           >
+            {/* Standard printable white A4 sheet with realistic dark shadow */}
             <div
               ref={internalRef}
-              className="shadow-2xl"
+              className="bg-white text-slate-900 shadow-2xl dark:shadow-[0_25px_80px_rgba(0,0,0,0.85)] ring-1 ring-slate-900/5 dark:ring-white/10"
               style={{ width: '210mm', minHeight: '297mm' }}
               dangerouslySetInnerHTML={{ __html: resumeHtml }}
             />
