@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ResumeProvider, useResume } from './context/ResumeContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider, useToast } from './components/Toast';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
@@ -63,7 +64,7 @@ function ChatBuilder({ onComplete }) {
 
   const finishCollection = (ans) => {
     markSectionComplete('meta');
-    addBotMessage('All done. Generating your professional resume...', 400);
+    addBotMessage('All done! Generating your professional resume...', 400);
     setTimeout(() => {
       const data = buildResumeJSON(ans);
       const score = calculateATSScore(data);
@@ -176,21 +177,26 @@ function ChatBuilder({ onComplete }) {
   const showChoices = currentQuestion?.type === 'choice' && !isTyping && !dynamicField;
 
   return (
-    <div className="max-w-[900px] mx-auto px-4 py-8">
+    <div className="max-w-[950px] mx-auto px-4 py-8">
       <div className="flex gap-6">
         {userType && (
-          <aside className="hidden lg:block w-52 flex-shrink-0">
-            <div className="sticky top-24 bg-white border border-slate-200 rounded-xl p-4">
+          <aside className="hidden lg:block w-56 flex-shrink-0">
+            <div className="sticky top-24 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm backdrop-blur-sm">
               <ProgressTracker userType={userType} currentSection={currentQuestion?.section || ''} completedSections={completedSections} />
             </div>
           </aside>
         )}
-        <div className="flex-1 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-700">Resume Builder</span>
-            <span className="text-xs text-slate-400">{dynamicField ? `Item ${dynamicCounter}/${dynamicTotal}` : `Step ${Math.max(currentQIndex + 1, 1)}`}</span>
+        <div className="flex-1 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex flex-col backdrop-blur-sm">
+          <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+              <span className="text-sm font-bold text-slate-800 dark:text-white">AI Resume Builder Assistant</span>
+            </div>
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/60">
+              {dynamicField ? `Item ${dynamicCounter}/${dynamicTotal}` : `Step ${Math.max(currentQIndex + 1, 1)}`}
+            </span>
           </div>
-          <div className="px-5 py-5 space-y-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 320px)' }}>
+          <div className="px-5 py-5 space-y-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 320px)', minHeight: '380px' }}>
             {messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
             {isTyping && <TypingIndicator />}
             <div ref={chatEndRef} />
@@ -202,7 +208,7 @@ function ChatBuilder({ onComplete }) {
               ))}
             </div>
           )}
-          <div className="px-5 pb-5 pt-2">
+          <div className="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-900/40">
             <ChatInput onSend={handleSend} disabled={isTyping || showChoices} placeholder={currentQuestion?.placeholder || 'Type your answer...'} multiline={currentQuestion?.multiline || false} />
           </div>
         </div>
@@ -230,17 +236,29 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <Navbar onCreateNew={handleCreateNew} />
       {view === 'dashboard' && <Dashboard onCreateNew={handleCreateNew} />}
       {(view === 'create' || showChat) && !resumeData && <ChatBuilder onComplete={handleChatComplete} />}
       {view === 'editor' && resumeData && <Editor onBack={handleBack} />}
       {view === 'create' && resumeData && (
-        <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">You already have a resume. Open the editor or start fresh.</p>
-          <div className="flex gap-3 justify-center">
-            <button onClick={() => dispatch({ type: 'SET_VIEW', payload: 'editor' })} className="btn-primary">Open Editor</button>
-            <button onClick={() => { dispatch({ type: 'RESET' }); setShowChat(true); }} className="btn-secondary flex items-center gap-2"><RotateCcw size={14} /> Start Fresh</button>
+        <div className="text-center py-16 max-w-lg mx-auto px-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Resume already loaded</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">
+              You currently have a resume open in the workspace. You can continue customizing it in the Editor or start fresh.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button onClick={() => dispatch({ type: 'SET_VIEW', payload: 'editor' })} className="btn-primary">
+                Open Editor
+              </button>
+              <button
+                onClick={() => { dispatch({ type: 'RESET' }); setShowChat(true); }}
+                className="btn-secondary flex items-center gap-2"
+              >
+                <RotateCcw size={14} /> Start Fresh
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -250,11 +268,13 @@ function AppContent() {
 
 function App() {
   return (
-    <ToastProvider>
-      <ResumeProvider>
-        <AppContent />
-      </ResumeProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <ResumeProvider>
+          <AppContent />
+        </ResumeProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 

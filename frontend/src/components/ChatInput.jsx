@@ -16,7 +16,6 @@ const ChatInput = ({ onSend, disabled, placeholder, multiline }) => {
     if (!trimmed || disabled) return;
     onSend(trimmed);
     setValue('');
-    // Reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -24,7 +23,7 @@ const ChatInput = ({ onSend, disabled, placeholder, multiline }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (multiline && e.shiftKey) return; // allow newline in multiline mode
+      if (multiline && e.shiftKey) return;
       if (!multiline || !e.shiftKey) {
         e.preventDefault();
         handleSend();
@@ -34,7 +33,6 @@ const ChatInput = ({ onSend, disabled, placeholder, multiline }) => {
 
   const handleInput = (e) => {
     setValue(e.target.value);
-    // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
@@ -59,15 +57,16 @@ const ChatInput = ({ onSend, disabled, placeholder, multiline }) => {
         disabled={!value.trim() || disabled}
         className={`absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
           value.trim() && !disabled
-            ? 'bg-blue-700 text-white hover:bg-blue-800'
-            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/25 active:scale-95'
+            : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
         }`}
         id="send-button"
+        title="Send response"
       >
-        <Send size={16} />
+        <Send size={15} />
       </button>
       {multiline && (
-        <div className="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 flex items-center gap-1 opacity-60">
+        <div className="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1 opacity-70">
           <CornerDownLeft size={10} /> Shift+Enter for newline
         </div>
       )}
